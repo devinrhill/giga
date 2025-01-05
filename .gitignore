@@ -1,0 +1,4 @@
+# Unfinished headers
+include/giga/resource.h
+include/giga/sequence.h
+include/giga/stream.h
