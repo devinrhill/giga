@@ -7,7 +7,7 @@
 #include <format>
 #include <iostream>
 #endif
-#include "giga/lzss.h"
+#include "lzss.h"
 
 namespace giga {
 namespace lzss {

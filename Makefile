@@ -4,7 +4,7 @@ DEBUG := 1
 CXX := g++
 CXXFLAGS := -fPIC -std=c++20 -Iinclude $(if $(DEBUG),-Wall -Wextra -pedantic -g,-O3)
 LDFLAGS := -lfmt
-MODULES := giga/app giga/archive giga/bytestream giga/endianness giga/lzss giga/platform
+MODULES := app archive bytestream endianness lzss platform
 TARGET := libgiga.so
 
 SOURCEDIR := src
@@ -22,7 +22,7 @@ $(TARGET): $(OBJECTS)
 	$(CXX) -shared -fPIC -o $(TARGET) $(OBJECTS)
 
 install: $(TARGET)
-	cp -r include/giga /usr/include
+	cp -r include /usr/include/giga
 	cp $(TARGET) /usr/lib
 
 uninstall:

@@ -5,8 +5,8 @@
 #include <stdexcept>
 #include <string>
 #include <vector>
-#include "giga/bytestream.h"
-#include "giga/error.h"
+#include "bytestream.h"
+#include "error.h"
 
 namespace giga {
 

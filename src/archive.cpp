@@ -2,10 +2,8 @@
 #include <format>
 #include <string>
 #include <sys/stat.h>
-#include "giga/archive.h"
-#include "giga/error.h"
-
-#include <iostream>
+#include "archive.h"
+#include "error.h"
 
 namespace giga {
 

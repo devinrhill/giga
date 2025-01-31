@@ -1,4 +1,4 @@
-#include "giga/endianness.h"
+#include "endianness.h"
 
 namespace giga {
 namespace endian {

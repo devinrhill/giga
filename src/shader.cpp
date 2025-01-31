@@ -1,8 +1,8 @@
 #include <format>
 #include <filesystem>
 #include <GL/glew.h>
-#include "giga/error.h"
-#include "giga/shader.h"
+#include "error.h"
+#include "shader.h"
 
 namespace giga {
 namespace gfx {

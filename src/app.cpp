@@ -1,4 +1,4 @@
-#include "giga/app.h"
+#include "app.h"
 
 namespace giga {
 

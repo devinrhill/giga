@@ -1,4 +1,4 @@
-#include "giga/platform.h"
+#include "platform.h"
 
 namespace giga {
 namespace system {
