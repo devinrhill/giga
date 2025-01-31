@@ -35,9 +35,16 @@ inline uint64_t byteswap64(uint64_t num) {
 
 const char* getEndiannessName(Endianness endianness = Endianness::Unknown);
 template<typename T>
-T byteswapEndianness(T num, Endianness endianness = native) {
+T byteswapEndianness(T num, Endianness endianness = native, int size = -1) {
+    std::size_t tmpSize;
+    if(size == -1) {
+        tmpSize = sizeof(T);
+    } else {
+        tmpSize = size;
+    }
+
 	if(endianness != native) {
-		switch(sizeof(T)) {
+		switch(tmpSize) {
 		case 1:
 			goto do_nothing;
 		case 2:
@@ -49,8 +56,8 @@ T byteswapEndianness(T num, Endianness endianness = native) {
 		default:
 			T tmpNum = num;
 
-			for(std::size_t i = 0; i < sizeof(T); i++) {
-				reinterpret_cast<char*>(&tmpNum)[i] = reinterpret_cast<char*>(&num)[sizeof(T) - i - 1];
+			for(std::size_t i = 0; i < tmpSize; i++) {
+				reinterpret_cast<char*>(&tmpNum)[i] = reinterpret_cast<char*>(&num)[tmpSize - i - 1];
 			}
 
 			return tmpNum;

@@ -12,21 +12,21 @@ const char* getPlatformName(Platform _platform) {
 	case Platform::Unknown:
 		goto unknown;
 	case Platform::Unix:
-		return "Unix system";
+		return "Unix";
 	case Platform::Posix:
-		return "POSIX system";
+		return "POSIX";
 	case Platform::Linux:
-		return "Linux system";
+		return "Linux";
 	case Platform::Windows:
-		return "Microsoft Windows system";
+		return "Microsoft Windows";
 	case Platform::Mac:
-		return "Apple Mac system";
+		return "Apple iMac";
 	case Platform::iPhone:
-		return "Apple iPhone system";
+		return "Apple iPhone";
 	}
 
 unknown:
-	return "Unknown platform";
+	return "Unknown";
 }
 
 } // namespace system

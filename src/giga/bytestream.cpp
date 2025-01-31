@@ -11,8 +11,8 @@
 namespace giga {
 
 // TODO: Review code and improve
-// TODO: Catch exceptions for std::copy
 // TODO: Catch ALL exceptions (slow)
+
 void Bytestream::openFile(const std::string& filename) {
 	if(filename.empty()) {
         throw err::FormatException<std::invalid_argument>("Filename is empty");
@@ -55,6 +55,8 @@ void Bytestream::openFile(const std::string& filename) {
     } catch(const std::ifstream::failure& e) {
         throw err::FormatException<std::runtime_error>(std::format("Couldn't read {} characters from file input stream of file '{}'", fileSize, filename));
     }
+
+    _filename = filename;
 }
 
 void Bytestream::finalizeFile(const std::string& filename) {
@@ -78,7 +80,7 @@ void Bytestream::finalizeFile(const std::string& filename) {
     }
 }
 
-void Bytestream::seek(std::size_t pos, SeekMode mode) {
+std::size_t Bytestream::seek(std::size_t pos, SeekMode mode) {
 	std::size_t tmpPos = _pos;
 
     switch(mode) {
@@ -100,9 +102,11 @@ void Bytestream::seek(std::size_t pos, SeekMode mode) {
     }
 
     _pos = tmpPos;
+
+    return _pos;
 }
 
-std::size_t Bytestream::read(std::uint8_t* buf, std::size_t size) {
+std::size_t Bytestream::read(std::uint8_t* buf, std::size_t size, int offset) {
     if(!buf) {
         throw err::FormatException<std::invalid_argument>("Buffer is null");
     }
@@ -110,20 +114,29 @@ std::size_t Bytestream::read(std::uint8_t* buf, std::size_t size) {
         throw err::FormatException<std::invalid_argument>("Buffer size is too small");
     }
 
-    std::size_t availableCount = _buf.size() - _pos;
+    std::size_t tmpOffset;
+    if(offset == -1) {
+        tmpOffset = _pos;
+    } else {
+        tmpOffset = offset;
+    }
+
+    std::size_t availableCount = _buf.size() - tmpOffset;
     if(availableCount < size) {
         throw err::FormatException<std::runtime_error>("Not enough characters available in the internal character buffer to read");
     }
 
     std::size_t readCount = std::min(availableCount, size);
 
-    std::copy(_buf.data() + _pos, _buf.data() + _pos + readCount, buf);
-    _pos += readCount;
+    std::copy(_buf.data() + tmpOffset, _buf.data() + tmpOffset + readCount, buf);
+    if(offset == -1) {
+        _pos += readCount;
+    }
 
     return readCount;
 }
 
-std::size_t Bytestream::write(const std::uint8_t* buf, std::size_t size) {
+std::size_t Bytestream::write(const std::uint8_t* buf, std::size_t size, int offset) {
 	if(!buf) {
         throw err::FormatException<std::invalid_argument>("Buffer is null");
     }
@@ -131,28 +144,37 @@ std::size_t Bytestream::write(const std::uint8_t* buf, std::size_t size) {
         throw err::FormatException<std::invalid_argument>("Buffer size is too small");
     }
 
-    if(_pos + size > _buf.size()) {
+    std::size_t tmpOffset;
+    if(offset == -1) {
+        tmpOffset = _pos;
+    } else {
+        tmpOffset = offset;
+    }
+
+    if(tmpOffset + size > _buf.size()) {
         try {
-            _buf.resize(_pos + size);
+            _buf.resize(tmpOffset + size);
         } catch(const std::length_error& e) {
-            throw err::FormatException<std::length_error>(std::format("Couldn't resize internal character buffer to size {}", _pos + size));
+            throw err::FormatException<std::length_error>(std::format("Couldn't resize internal character buffer to size {}", tmpOffset + size));
         }
     }
 
-    std::copy(buf, buf + size, _buf.begin() + _pos);
-    _pos += size;
+    std::copy(buf, buf + size, _buf.begin() + tmpOffset);
+    if(offset == -1) {
+        _pos += size;
+    }
 
     return size;
 }
 
-void Bytestream::writePadding(std::uint8_t pad, std::size_t padCount) {
+void Bytestream::writePadding(std::uint8_t pad, std::size_t padCount, int offset) {
 	if(padCount < 1) {
         return;
     }
 
 	for(std::size_t i = 0; i < padCount; i++) {
 		try {
-            this->write(&pad, 1);
+            this->write(&pad, 1, offset);
         } catch(const std::exception& e) {
             throw err::FormatException<std::runtime_error>("Couldn't write padding byte to internal character buffer");
         }
@@ -188,6 +210,15 @@ bool Bytestream::isEmpty() const noexcept {
 	return _buf.empty();
 }
 
+
+std::string Bytestream::getFilename() const noexcept {
+    return _filename;
+}
+
+const std::uint8_t* Bytestream::getBuf() const noexcept {
+	return _buf.data();
+}
+
 std::size_t Bytestream::getSize() const noexcept {
 	return _buf.size();
 }
@@ -196,9 +227,7 @@ std::size_t Bytestream::getPos() const noexcept {
 	return _pos;
 }
 
-const std::uint8_t* Bytestream::getBuf() const noexcept {
-	return _buf.data();
-}
+
 
 endian::Endianness Bytestream::getEndianness() const noexcept {
 	return _endianness;
@@ -208,6 +237,10 @@ void Bytestream::reset() noexcept {
 	_buf.clear();
 	_pos = 0;
 	_endianness = endian::native;
+}
+
+void Bytestream::setFilename(const std::string& filename) noexcept {
+    _filename = filename;
 }
 
 void Bytestream::setEndianness(endian::Endianness endianness) noexcept {

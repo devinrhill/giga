@@ -10,15 +10,15 @@ const char* getEndiannessName(Endianness endianness) {
 
 	switch(endianness) {
 	case Endianness::Little:
-		return "Little endian";
+		return "Little";
 	case Endianness::Big:
-		return "Big endian";
+		return "Big";
 	default:
 		goto unknown_endianness;
 	}
 
 unknown_endianness:
-	return "Unknown endianness";
+	return "Unknown";
 }
 
 } // namespace endian
