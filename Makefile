@@ -16,6 +16,7 @@ OBJECTS := $(foreach MODULE,$(MODULES),$(OBJECTDIR)/$(MODULE).o)
 all: $(OBJECTS)
 
 $(OBJECTS): $(OBJECTDIR)/%.o: $(SOURCEDIR)/%.cpp
+	mkdir -p $(OBJECTDIR)
 	$(CXX) $< $(CXXFLAGS) -c -o $@
 
 $(TARGET): $(OBJECTS)
