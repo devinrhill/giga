@@ -40,15 +40,15 @@ public:
     bool isEmpty() const noexcept;
     std::string getFilename() const noexcept;
     u8* getBuf() noexcept;
-    std::size_t getSize() const noexcept;
     std::size_t getPos() const noexcept;
+    std::size_t getSize() const noexcept;
     Endianness getEndianness() const noexcept;
 
     // Setters
-    void reset() noexcept;
     void setFilename(const std::string& filename) noexcept;
     void setBuf(const u8* buf, std::size_t size);
     void setEndianness(Endianness _endianness) noexcept;
+    void reset() noexcept;
 	
     // Template Input/Output
 	template<typename T>
