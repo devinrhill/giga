@@ -25,30 +25,30 @@ enum class Platform {
 };
 
 #if __unix__
-constexpr Platform platform = Platform::Unix;
+constexpr Platform PLATFORM = Platform::Unix;
 #elif defined(_POSIX_VERSION)
-constexpr Platform platform = Platform::Posix;
+constexpr Platform PLATFORM = Platform::Posix;
 #elif __linux__
-constexpr Platform platform = Platform::Linux;
+constexpr Platform PLATFORM = Platform::Linux;
 #elif IS_WINDOWS
-constexpr Platform platform = Platform::Windows;
+constexpr Platform PLATFORM = Platform::Windows;
 #elif __APPLE__
 #include <TargetConditionals.h>
 #if TARGET_OS_MAC
-constexpr Platform platform = Platform::Mac;
+constexpr Platform PLATFORM = Platform::Mac;
 #elif TARGET_OS_IPHONE
-constexpr Platform platform = Platform::iPhone;
+constexpr Platform PLATFORM = Platform::iPhone;
 #endif
 #else
-constexpr Platform platform = Platform::Unknown;
+constexpr Platform PLATFORM = Platform::Unknown;
 #endif
 
 const char* getPlatformName(Platform _platform = Platform::Unknown);
 
 #if IS_WINDOWS
-constexpr const char* directorySeparator = "\\";
+constexpr const char* DIRECTORY_SEPARATOR = "\\";
 #else
-constexpr const char* directorySeparator = "/";
+constexpr const char* DIRECTORY_SEPARATOR = "/";
 #endif
 
 } // namespace system

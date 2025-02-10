@@ -1,5 +1,7 @@
 #include <filesystem>
 #include <format>
+#include <functional>
+#include <optional>
 #include <string>
 #include <sys/stat.h>
 #include "archive.h"
@@ -68,6 +70,24 @@ void Archive::extractAll(const std::string& directoryName) {
             throw err::FormatException<std::runtime_error>(std::format("Couldn't finalize bytestream '{}'", tmpPath.string()));
         }
     }
+}
+
+const std::string& Archive::getFilename() const noexcept {
+    return _filename;
+}
+
+giga::Bytestream& Archive::getMember(const std::string& filename) {
+    for(giga::Bytestream& bytestream: *this) {
+        if(bytestream.getFilename() == filename) {
+            return bytestream;
+        }
+    }
+
+    throw std::runtime_error("Couldn't find member");
+}
+
+void Archive::setFilename(const std::string& filename) noexcept {
+    _filename = filename;
 }
 
 } // namespace giga

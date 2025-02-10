@@ -1,10 +1,10 @@
 # leave empty for release
-DEBUG := 1
+DEBUG :=
 
 CXX := g++
 CXXFLAGS := -fPIC -std=c++20 -Iinclude $(if $(DEBUG),-Wall -Wextra -pedantic -g,-O3)
-LDFLAGS := -lfmt
-MODULES := app archive bytestream endianness lzss platform
+LDFLAGS :=
+MODULES := archive bytestream endianness lzss platform
 TARGET := libgiga.so
 
 SOURCEDIR := src

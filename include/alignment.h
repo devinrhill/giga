@@ -7,13 +7,13 @@ namespace giga {
 namespace system {
 
 #ifdef IS_64_BIT
-constexpr unsigned int alignment = 8;
+constexpr unsigned int ALIGNMENT = 8;
 #else
-constexpr unsigned int alignment = 4;
+constexpr unsigned int ALIGNMENT = 4;
 #endif
 
 inline unsigned align(const unsigned size) {
-	return (((size) + (alignment - 1)) & ~(alignment - 1));
+	return (((size) + (ALIGNMENT - 1)) & ~(ALIGNMENT- 1));
 }
 
 } // namespace system

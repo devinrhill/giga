@@ -1,6 +1,8 @@
 #ifndef GIGA_ARCHIVE_H
 #define GIGA_ARCHIVE_H
 
+#include <functional>
+#include <optional>
 #include <vector>
 #include "bytestream.h"
 
@@ -15,6 +17,13 @@ public:
     // output
     void extract(const std::string& filename, const std::string& directoryName = ".");
     void extractAll(const std::string& directoryName = ".");
+
+    const std::string& getFilename() const noexcept;
+    giga::Bytestream& getMember(const std::string& filename);
+    void setFilename(const std::string& filename) noexcept;
+
+private:
+    std::string _filename = "";
 };
 
 } // namespace giga

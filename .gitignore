@@ -1,6 +1,8 @@
 # Unfinished headers
-include/giga/resource.h
-include/giga/sequence.h
-include/giga/stream.h
+include/app.h
+include/resource.h
+include/sequence.h
+include/stream.h
 
-build
+build/*.o
+libgiga.so

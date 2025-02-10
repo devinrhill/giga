@@ -20,6 +20,7 @@ public:
         End = 3
     };
 
+    Bytestream& operator=(Bytestream& other);
     void openFile(const std::string& filename);
 	void finalizeFile(const std::string& filename);
     std::size_t seek(std::size_t pos, SeekMode mode = SeekMode::Beg);
@@ -30,17 +31,18 @@ public:
 
     bool isEmpty() const noexcept;
     std::string getFilename() const noexcept;
-    const std::uint8_t* getBuf() const noexcept;
+    std::uint8_t* getBuf() noexcept;
     std::size_t getSize() const noexcept;
     std::size_t getPos() const noexcept;
     endian::Endianness getEndianness() const noexcept;
 
     void reset() noexcept;
     void setFilename(const std::string& filename) noexcept;
+    void setBuf(const std::uint8_t* buf, std::size_t size);
     void setEndianness(endian::Endianness _endianness) noexcept;
 	
 	template<typename T>
-    T readScalar(int size = -1) {
+    T readScalar(int size = -1, int offset = -1) {
         static_assert(std::is_scalar<T>::value, "Type T is non-scalar");
 
         std::size_t tmpSize;
@@ -52,7 +54,7 @@ public:
 
         T num;
         try {
-            this->read(reinterpret_cast<std::uint8_t*>(&num), tmpSize);
+            this->read(reinterpret_cast<std::uint8_t*>(&num), tmpSize, offset);
         } catch(const std::exception& e) {
             throw std::runtime_error("Couldn't read from buffer: " + std::string(e.what()));
         }
@@ -62,10 +64,9 @@ public:
         return num;
     }
 
-
     template<typename T>
-    void writeScalar(const T num, int size = -1) {
-        static_assert(std::is_scalar<T>::value, "type T is non-scalar");
+    void writeScalar(const T num, int size = -1, int offset = -1) {
+        static_assert(std::is_scalar<T>::value, "Type T is non-scalar");
 
         std::size_t tmpSize;
         if(size == -1) {
@@ -77,17 +78,17 @@ public:
         // swap bytes if needed
         T tmpNum = endian::byteswapEndianness<T>(num, _endianness, tmpSize);
         try {
-            this->write(reinterpret_cast<const std::uint8_t*>(&tmpNum), tmpSize);
+            this->write(reinterpret_cast<const std::uint8_t*>(&tmpNum), tmpSize, offset);
         } catch(const std::exception& e){
-            throw std::runtime_error("couldn't write to buffer: " + std::string(e.what()));
+            throw std::runtime_error("Couldn't write to buffer: " + std::string(e.what()));
         }
     }
 
 private:
-    std::string _filename;
-    std::vector<std::uint8_t> _buf;
+    std::string _filename = "";
+    std::vector<std::uint8_t> _buf = {};
     std::size_t _pos = 0;
-    endian::Endianness _endianness = endian::native;
+    endian::Endianness _endianness = endian::NATIVE;
 };
 
 } // namespace giga

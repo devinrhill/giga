@@ -13,6 +13,17 @@ namespace giga {
 // TODO: Review code and improve
 // TODO: Catch ALL exceptions (slow)
 
+Bytestream& Bytestream::operator=(Bytestream& other) {
+    this->reset();
+
+    this->setBuf(const_cast<const std::uint8_t*>(other.getBuf()), other.getSize());
+    _pos = other.getPos();
+    _filename = other.getFilename();
+    _endianness = other.getEndianness();
+
+    return *this;
+}
+
 void Bytestream::openFile(const std::string& filename) {
 	if(filename.empty()) {
         throw err::FormatException<std::invalid_argument>("Filename is empty");
@@ -215,7 +226,7 @@ std::string Bytestream::getFilename() const noexcept {
     return _filename;
 }
 
-const std::uint8_t* Bytestream::getBuf() const noexcept {
+std::uint8_t* Bytestream::getBuf() noexcept {
 	return _buf.data();
 }
 
@@ -228,7 +239,6 @@ std::size_t Bytestream::getPos() const noexcept {
 }
 
 
-
 endian::Endianness Bytestream::getEndianness() const noexcept {
 	return _endianness;
 }
@@ -236,15 +246,22 @@ endian::Endianness Bytestream::getEndianness() const noexcept {
 void Bytestream::reset() noexcept {
 	_buf.clear();
 	_pos = 0;
-	_endianness = endian::native;
+	_endianness = endian::NATIVE;
+    _filename = "";
 }
 
 void Bytestream::setFilename(const std::string& filename) noexcept {
     _filename = filename;
 }
 
+void Bytestream::setBuf(const std::uint8_t* buf, std::size_t size) {
+    _buf.clear();
+    _buf.resize(size);
+    std::copy(buf, buf + size, _buf.data());
+}
+
 void Bytestream::setEndianness(endian::Endianness endianness) noexcept {
-	this->_endianness = endianness;
+	_endianness = endianness;
 }
 
 } // namespace giga

@@ -5,7 +5,7 @@ namespace system {
 
 const char* getPlatformName(Platform _platform) {
 	if(_platform == Platform::Unknown) {
-		_platform = platform;
+		_platform = PLATFORM;
 	}
 
 	switch(_platform) {

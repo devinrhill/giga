@@ -12,9 +12,9 @@ enum class Endianness {
 };
 
 #if (defined(__x86_64__) || defined(__i386__))
-constexpr Endianness native = Endianness::Little;
+constexpr Endianness NATIVE = Endianness::Little;
 #else
-constexpr Endianness native = Endianness::Big;
+constexpr Endianness NATIVE = Endianness::Big;
 #endif
 
 inline uint16_t byteswap16(uint16_t num) {
@@ -35,7 +35,7 @@ inline uint64_t byteswap64(uint64_t num) {
 
 const char* getEndiannessName(Endianness endianness = Endianness::Unknown);
 template<typename T>
-T byteswapEndianness(T num, Endianness endianness = native, int size = -1) {
+T byteswapEndianness(T num, Endianness endianness = NATIVE, int size = -1) {
     std::size_t tmpSize;
     if(size == -1) {
         tmpSize = sizeof(T);
@@ -43,16 +43,19 @@ T byteswapEndianness(T num, Endianness endianness = native, int size = -1) {
         tmpSize = size;
     }
 
-	if(endianness != native) {
+	if(endianness != NATIVE) {
 		switch(tmpSize) {
+
 		case 1:
 			goto do_nothing;
+/*
 		case 2:
-			return byteswap16(num);
+			return static_cast<T>(byteswap16(num));
 		case 4:
-			return byteswap32(num);
+			return static_cast<T>(byteswap32(num));
 		case 8:
-			return byteswap64(num);
+			return static_cast<T>(byteswap64(num));
+*/
 		default:
 			T tmpNum = num;
 

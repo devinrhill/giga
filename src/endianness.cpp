@@ -5,7 +5,7 @@ namespace endian {
 
 const char* getEndiannessName(Endianness endianness) {
 	if(endianness == Endianness::Unknown) {
-		endianness = native;
+		endianness = NATIVE;
 	}
 
 	switch(endianness) {
