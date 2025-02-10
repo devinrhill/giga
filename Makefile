@@ -13,14 +13,14 @@ SOURCES := $(foreach MODULE,$(MODULES),$(SOURCEDIR)/$(MODULE).cpp)
 OBJECTDIR := build
 OBJECTS := $(foreach MODULE,$(MODULES),$(OBJECTDIR)/$(MODULE).o)
 
-all: $(OBJECTS)
+all: $(TARGET)
 
 $(OBJECTS): $(OBJECTDIR)/%.o: $(SOURCEDIR)/%.cpp
 	mkdir -p $(OBJECTDIR)
 	$(CXX) $< $(CXXFLAGS) -c -o $@
 
 $(TARGET): $(OBJECTS)
-	$(CXX) -shared -fPIC -o $(TARGET) $(OBJECTS)
+	$(CXX) $@ -shared -fPIC -o $(TARGET)
 
 install: uninstall $(TARGET)
 	cp -r include /usr/include/giga
