@@ -1,9 +1,11 @@
 #ifndef GIGA_ENDIANNESS_H
 #define GIGA_ENDIANNESS_H
 
-#include <cstdint>
+#include <cstddef>
+#include "types.h"
 
 namespace giga {
+
 enum class Endianness {
 	Unknown = 0,
 	Little = 1234,
@@ -16,16 +18,16 @@ constexpr Endianness NATIVE_ENDIANNESS = Endianness::Little;
 constexpr Endianness NATIVE_ENDIANNESS = Endianness::Big;
 #endif
 
-inline uint16_t byteswap16(uint16_t num) {
+inline u16 byteswap16(u16 num) {
     return ( (((num) >> 8) & 0x00ff) | (((num) << 8) & 0xff00) );
 }
 
-inline uint32_t byteswap32(uint32_t num) {
+inline u32 byteswap32(u32 num) {
     return ( (((num) >> 24) & 0x000000ff) | (((num) >>  8) & 0x0000ff00) |
              (((num) <<  8) & 0x00ff0000) | (((num) << 24) & 0xff000000) );
 }
 
-inline uint64_t byteswap64(uint64_t num) {
+inline u64 byteswap64(u64 num) {
     return ( (((num) >> 56) & 0x00000000000000ff) | (((num) >> 40) & 0x000000000000ff00) |
              (((num) >> 24) & 0x0000000000ff0000) | (((num) >>  8) & 0x00000000ff000000) |
              (((num) <<  8) & 0x000000ff00000000) | (((num) << 24) & 0x0000ff0000000000) |
@@ -44,25 +46,27 @@ T byteswapEndianness(T num, Endianness endianness = NATIVE_ENDIANNESS, int size 
 
 	if(endianness != NATIVE_ENDIANNESS) {
 		switch(tmpSize) {
+            case 1: {
+                goto do_nothing;
+            }
+    /*
+            case 2: {
+                return static_cast<T>(byteswap16(num));
+            } case 4: {
+                return static_cast<T>(byteswap32(num));
+            } case 8: {
+                return static_cast<T>(byteswap64(num));
+            }
+    */
+            default: {
+                T tmpNum = num;
 
-		case 1:
-			goto do_nothing;
-/*
-		case 2:
-			return static_cast<T>(byteswap16(num));
-		case 4:
-			return static_cast<T>(byteswap32(num));
-		case 8:
-			return static_cast<T>(byteswap64(num));
-*/
-		default:
-			T tmpNum = num;
+                for(std::size_t i = 0; i < tmpSize; i++) {
+                    reinterpret_cast<char*>(&tmpNum)[i] = reinterpret_cast<char*>(&num)[tmpSize - i - 1];
+                }
 
-			for(std::size_t i = 0; i < tmpSize; i++) {
-				reinterpret_cast<char*>(&tmpNum)[i] = reinterpret_cast<char*>(&num)[tmpSize - i - 1];
-			}
-
-			return tmpNum;
+                return tmpNum;
+            }
 		}
 	}
 

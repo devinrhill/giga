@@ -2,16 +2,17 @@
 #define GIGA_ALIGNMENT_H
 
 #include "platform.h"
+#include "types.h"
 
 namespace giga {
 
 #ifdef IS_64_BIT
-constexpr unsigned int ALIGNMENT = 8;
+constexpr uint ALIGNMENT = 8;
 #else
-constexpr unsigned int ALIGNMENT = 4;
+constexpr uint ALIGNMENT = 4;
 #endif
 
-inline unsigned align(const unsigned size) {
+inline uint align(uint size) {
 	return (((size) + (ALIGNMENT - 1)) & ~(ALIGNMENT- 1));
 }
 

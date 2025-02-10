@@ -16,9 +16,9 @@ namespace giga {
 Bytestream& Bytestream::operator=(Bytestream& other) {
     this->reset();
 
+    _filename = other.getFilename();
     this->setBuf(const_cast<const std::uint8_t*>(other.getBuf()), other.getSize());
     _pos = other.getPos();
-    _filename = other.getFilename();
     _endianness = other.getEndianness();
 
     return *this;
@@ -38,7 +38,7 @@ void Bytestream::openFile(const std::string& filename) {
         throw err::FormatException<std::runtime_error>(std::format("Couldn't open file '{}' for reading", filename));
     }
 
-    std::size_t fileSize = 0;
+    std::size_t fileSize;
     try {
         fileSize = static_cast<std::size_t>(file.tellg());
     } catch(const std::ifstream::failure& e) {
@@ -117,6 +117,12 @@ std::size_t Bytestream::seek(std::size_t pos, SeekMode mode) {
     return _pos;
 }
 
+std::size_t Bytestream::resize(std::size_t newSize) {
+    _buf.resize(newSize);
+
+    return _buf.size();
+}
+
 std::size_t Bytestream::read(std::uint8_t* buf, std::size_t size, int offset) {
     if(!buf) {
         throw err::FormatException<std::invalid_argument>("Buffer is null");
@@ -140,6 +146,7 @@ std::size_t Bytestream::read(std::uint8_t* buf, std::size_t size, int offset) {
     std::size_t readCount = std::min(availableCount, size);
 
     std::copy(_buf.data() + tmpOffset, _buf.data() + tmpOffset + readCount, buf);
+
     if(offset == -1) {
         _pos += readCount;
     }
@@ -171,6 +178,7 @@ std::size_t Bytestream::write(const std::uint8_t* buf, std::size_t size, int off
     }
 
     std::copy(buf, buf + size, _buf.begin() + tmpOffset);
+
     if(offset == -1) {
         _pos += size;
     }
@@ -221,7 +229,6 @@ bool Bytestream::isEmpty() const noexcept {
 	return _buf.empty();
 }
 
-
 std::string Bytestream::getFilename() const noexcept {
     return _filename;
 }
@@ -230,24 +237,16 @@ std::uint8_t* Bytestream::getBuf() noexcept {
 	return _buf.data();
 }
 
-std::size_t Bytestream::getSize() const noexcept {
-	return _buf.size();
-}
-
 std::size_t Bytestream::getPos() const noexcept {
 	return _pos;
 }
 
+std::size_t Bytestream::getSize() const noexcept {
+	return _buf.size();
+}
 
 Endianness Bytestream::getEndianness() const noexcept {
 	return _endianness;
-}
-
-void Bytestream::reset() noexcept {
-	_buf.clear();
-	_pos = 0;
-	_endianness = NATIVE_ENDIANNESS;
-    _filename = "";
 }
 
 void Bytestream::setFilename(const std::string& filename) noexcept {
@@ -256,12 +255,20 @@ void Bytestream::setFilename(const std::string& filename) noexcept {
 
 void Bytestream::setBuf(const std::uint8_t* buf, std::size_t size) {
     _buf.clear();
+
     _buf.resize(size);
     std::copy(buf, buf + size, _buf.data());
 }
 
 void Bytestream::setEndianness(Endianness endianness) noexcept {
 	_endianness = endianness;
+}
+
+void Bytestream::reset() noexcept {
+    _filename = "";
+	_buf.clear();
+	_pos = 0;
+	_endianness = NATIVE_ENDIANNESS;
 }
 
 } // namespace giga

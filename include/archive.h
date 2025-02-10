@@ -1,8 +1,7 @@
 #ifndef GIGA_ARCHIVE_H
 #define GIGA_ARCHIVE_H
 
-#include <functional>
-#include <optional>
+#include <string>
 #include <vector>
 #include "bytestream.h"
 

@@ -2,13 +2,13 @@
 #define GIGA_BYTESTREAM_H
 
 #include <cstddef>
-#include <cstdint>
 #include <format>
 #include <stdexcept>
 #include <string>
 #include <vector>
 #include "endianness.h"
 #include "error.h"
+#include "types.h"
 
 // TODO: Add documentation
 
@@ -23,26 +23,34 @@ public:
     };
 
     Bytestream& operator=(Bytestream& other);
+
     void openFile(const std::string& filename);
 	void finalizeFile(const std::string& filename);
-    std::size_t seek(std::size_t pos, SeekMode mode = SeekMode::Beg);
-    std::size_t read(std::uint8_t* buf, std::size_t size, int offset = -1);
-    std::size_t write(const std::uint8_t* buf, std::size_t size, int offset = -1);
-    void writePadding(std::uint8_t pad, std::size_t padCount, int offset = -1);
-    void writeString(const std::string& str, std::uint8_t pad = 0, std::size_t len = -1);
 
+    std::size_t seek(std::size_t pos, SeekMode mode = SeekMode::Beg);
+    std::size_t resize(std::size_t newSize);
+
+    // Input/Output
+    std::size_t read(u8* buf, std::size_t size, int offset = -1);
+    std::size_t write(const u8* buf, std::size_t size, int offset = -1);
+    void writePadding(u8 padding, std::size_t paddingCount, int offset = -1);
+    void writeString(const std::string& str, u8 pad = 0, std::size_t len = -1);
+
+    // Getters
     bool isEmpty() const noexcept;
     std::string getFilename() const noexcept;
-    std::uint8_t* getBuf() noexcept;
+    u8* getBuf() noexcept;
     std::size_t getSize() const noexcept;
     std::size_t getPos() const noexcept;
     Endianness getEndianness() const noexcept;
 
+    // Setters
     void reset() noexcept;
     void setFilename(const std::string& filename) noexcept;
-    void setBuf(const std::uint8_t* buf, std::size_t size);
+    void setBuf(const u8* buf, std::size_t size);
     void setEndianness(Endianness _endianness) noexcept;
 	
+    // Template Input/Output
 	template<typename T>
     T readScalar(int size = -1, int offset = -1) {
         static_assert(std::is_scalar<T>::value, "Type T is non-scalar");
@@ -56,7 +64,7 @@ public:
 
         T num;
         try {
-            this->read(reinterpret_cast<std::uint8_t*>(&num), tmpSize, offset);
+            this->read(reinterpret_cast<u8*>(&num), tmpSize, offset);
         } catch(const std::exception& e) {
             throw err::FormatException<std::runtime_error>(std::format("Couldn't read from buffer: {}", e.what()));
         }
@@ -80,7 +88,7 @@ public:
         // swap bytes if needed
         T tmpNum = byteswapEndianness<T>(num, _endianness, tmpSize);
         try {
-            this->write(reinterpret_cast<const std::uint8_t*>(&tmpNum), tmpSize, offset);
+            this->write(reinterpret_cast<const u8*>(&tmpNum), tmpSize, offset);
         } catch(const std::exception& e){
             throw err::FormatException<std::runtime_error>(std::format("Couldn't write to buffer: {}", e.what()));
         }
@@ -88,7 +96,7 @@ public:
 
 private:
     std::string _filename = "";
-    std::vector<std::uint8_t> _buf = {};
+    std::vector<u8> _buf = {};
     std::size_t _pos = 0;
     Endianness _endianness = NATIVE_ENDIANNESS;
 };
