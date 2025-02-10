@@ -22,7 +22,7 @@ $(OBJECTS): $(OBJECTDIR)/%.o: $(SOURCEDIR)/%.cpp
 $(TARGET): $(OBJECTS)
 	$(CXX) -shared -fPIC -o $(TARGET) $(OBJECTS)
 
-install: $(TARGET)
+install: uninstall $(TARGET)
 	cp -r include /usr/include/giga
 	cp $(TARGET) /usr/lib
 
