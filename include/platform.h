@@ -23,12 +23,12 @@ enum class Platform {
 	iPhone = 6
 };
 
-#if __unix__
+#if defined(__linux__)
+constexpr Platform NATIVE_PLATFORM = Platform::Linux;
+#elif defined(__unix__)
 constexpr Platform NATIVE_PLATFORM = Platform::Unix;
 #elif defined(_POSIX_VERSION)
 constexpr Platform NATIVE_PLATFORM = Platform::Posix;
-#elif __linux__
-constexpr Platform NATIVE_PLATFORM = Platform::Linux;
 #elif IS_WINDOWS
 constexpr Platform NATIVE_PLATFORM = Platform::Windows;
 #elif __APPLE__

@@ -14,6 +14,14 @@
         const int MAX_USERS = 100;
         constexpr float PI = 3.14159;
 
+    Use CamelCase for class-enum enumerations
+    Example:
+        enum class MyEnum {
+            None = 0,
+            Value1 = 1,
+            Value2 = 2
+        };
+
 ### Function Names
     Use camelCase for function names.
     Functions should be named as actions that describe their purpose.
@@ -28,23 +36,44 @@
         class UserProfile {};
         class AccountManager {};
 
+### Class member separation
+    Use this order:
+        - public
+        - protected
+        - private
+
 ### Member Variables
     Prefix private member variables with an underscore (_).
     Examples:
         int _age;
         std::string _name;
 
+    Try to prefix getters and setters with get and set respectively.
+    Example:
+        class MyClass {
+        public:
+            int getX() const noexcept;
+            void setX(int x) noexcept;
+
+        private:
+            int _x;
+        };
+
+    Also, keep variables above function declarations.
+
 ### Namespaces
     Use lowercase for namespaces, with words separated by underscores.
     Example:
         namespace data_processing {};
+
+    Try to have as little namespaces as possible or only use when necessary.
 
 ## 2. Formatting and Indentation
 ### Indentation
     Use 4 spaces per indentation level (no tabs).
 
 ### Line Length
-    Keep line length to a maximum of 80 characters for readability.
+    Keep line length to a maximum of 79 characters for readability and legacy terminal purposes.
 
 ### Braces
     Inline Braces: Opening brace should be on the same line as the control statement, and closing brace should be aligned with the start of the statement.
@@ -54,6 +83,16 @@
             // code block
         } else {
             // code block
+        }
+    
+    For switch-statements, open a brace after the case semicolon
+    Example:
+        switch(someEnum) {
+            case Enum::VALUE1: {
+                break;
+            } case Enum::VALUE2: {
+                break;
+            }
         }
 
 ### Spacing
