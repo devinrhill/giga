@@ -8,20 +8,21 @@ const char* getPlatformName(Platform _platform) {
 	}
 
 	switch(_platform) {
-	case Platform::Unknown:
-		goto unknown;
-	case Platform::Unix:
-		return "Unix";
-	case Platform::Posix:
-		return "POSIX";
-	case Platform::Linux:
-		return "Linux";
-	case Platform::Windows:
-		return "Microsoft Windows";
-	case Platform::Mac:
-		return "Apple iMac";
-	case Platform::iPhone:
-		return "Apple iPhone";
+        case Platform::Unix: {
+            return "Unix";
+        } case Platform::Posix: {
+            return "POSIX";
+        } case Platform::Linux: {
+            return "Linux";
+        } case Platform::Windows: {
+            return "Microsoft Windows";
+        } case Platform::Mac: {
+            return "Apple iMac";
+        } case Platform::iPhone: {
+            return "Apple iPhone";
+        } case Platform::Unknown: {} default: {
+            goto unknown;
+        }
 	}
 
 unknown:

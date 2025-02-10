@@ -3,10 +3,12 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <format>
 #include <stdexcept>
 #include <string>
 #include <vector>
 #include "endianness.h"
+#include "error.h"
 
 // TODO: Add documentation
 
@@ -56,7 +58,7 @@ public:
         try {
             this->read(reinterpret_cast<std::uint8_t*>(&num), tmpSize, offset);
         } catch(const std::exception& e) {
-            throw std::runtime_error("Couldn't read from buffer: " + std::string(e.what()));
+            throw err::FormatException<std::runtime_error>(std::format("Couldn't read from buffer: {}", e.what()));
         }
 
         num = byteswapEndianness<T>(num, _endianness, tmpSize);
@@ -80,7 +82,7 @@ public:
         try {
             this->write(reinterpret_cast<const std::uint8_t*>(&tmpNum), tmpSize, offset);
         } catch(const std::exception& e){
-            throw std::runtime_error("Couldn't write to buffer: " + std::string(e.what()));
+            throw err::FormatException<std::runtime_error>(std::format("Couldn't write to buffer: {}", e.what()));
         }
     }
 

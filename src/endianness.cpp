@@ -8,12 +8,13 @@ const char* getEndiannessName(Endianness endianness) {
 	}
 
 	switch(endianness) {
-	case Endianness::Little:
-		return "Little";
-	case Endianness::Big:
-		return "Big";
-	default:
-		goto unknown_endianness;
+	    case Endianness::Little: {
+		    return "Little";
+        } case Endianness::Big: {
+		    return "Big";
+        } default: {
+		    goto unknown_endianness;
+        }
 	}
 
 unknown_endianness:

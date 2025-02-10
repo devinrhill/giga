@@ -28,11 +28,7 @@ void Shader::openFile(const std::string& filename) {
     }
 
     Bytestream bytestream;
-    try {
-        bytestream.openFile(filename);
-    } catch(const std::exception& e) {
-        throw std::runtime_error("error opening file via Bytestream: " + std::string(e.what()));
-    }
+    bytestream.openFile(filename);
     const std::uint8_t* tmpCode = bytestream.getBuf();
 
     _id = glCreateShader(shaderType);
@@ -44,7 +40,7 @@ void Shader::openFile(const std::string& filename) {
     glGetShaderiv(_id, GL_COMPILE_STATUS, &success);
     if(!success) {
         glGetShaderInfoLog(_id, 512, nullptr, log);
-        throw std::runtime_error("couldn't compile shader: " + std::string(log));
+        throw err::FormatException<std::runtime_error>(std::format("Couldn't compile shader: {}", log));
     }
 }
 

@@ -1,7 +1,5 @@
 #include <filesystem>
 #include <format>
-#include <functional>
-#include <optional>
 #include <string>
 #include <sys/stat.h>
 #include "archive.h"
@@ -38,17 +36,9 @@ void Archive::extract(const std::string& filename, const std::string& directoryN
         if(bytestream.getFilename() == filename) {
             std::filesystem::create_directory(std::filesystem::path(filename).parent_path());
 
-            try {
-                tmpPath = std::filesystem::path(directoryName) / std::filesystem::path(filename);
-            } catch(const std::exception& e) {
-                throw err::FormatException<std::runtime_error>(std::format("Couldn't construct"));
-            }
+            tmpPath = std::filesystem::path(directoryName) / std::filesystem::path(filename);
 
-            try {
-                bytestream.finalizeFile(tmpPath);
-            } catch(const std::exception& e) {
-                throw err::FormatException<std::runtime_error>(std::format("Couldn't finalize bytestream '{}'", tmpPath));
-            }
+            bytestream.finalizeFile(tmpPath);
 
             break;
         }
@@ -64,11 +54,7 @@ void Archive::extractAll(const std::string& directoryName) {
 
         std::filesystem::create_directory(tmpPath.parent_path());
         
-        try {
-            bytestream.finalizeFile(tmpPath);
-        } catch(const std::exception& e) {
-            throw err::FormatException<std::runtime_error>(std::format("Couldn't finalize bytestream '{}'", tmpPath.string()));
-        }
+        bytestream.finalizeFile(tmpPath);
     }
 }
 
@@ -83,7 +69,7 @@ giga::Bytestream& Archive::getMember(const std::string& filename) {
         }
     }
 
-    throw std::runtime_error("Couldn't find member");
+    throw giga::err::FormatException<std::runtime_error>(std::format("Couldn't find member '{}'", filename));
 }
 
 void Archive::setFilename(const std::string& filename) noexcept {
