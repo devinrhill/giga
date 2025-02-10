@@ -12,7 +12,6 @@
 #endif
 
 namespace giga {
-namespace system {
 
 enum class Platform {
 	Unknown = 0,
@@ -25,22 +24,22 @@ enum class Platform {
 };
 
 #if __unix__
-constexpr Platform PLATFORM = Platform::Unix;
+constexpr Platform NATIVE_PLATFORM = Platform::Unix;
 #elif defined(_POSIX_VERSION)
-constexpr Platform PLATFORM = Platform::Posix;
+constexpr Platform NATIVE_PLATFORM = Platform::Posix;
 #elif __linux__
-constexpr Platform PLATFORM = Platform::Linux;
+constexpr Platform NATIVE_PLATFORM = Platform::Linux;
 #elif IS_WINDOWS
-constexpr Platform PLATFORM = Platform::Windows;
+constexpr Platform NATIVE_PLATFORM = Platform::Windows;
 #elif __APPLE__
 #include <TargetConditionals.h>
 #if TARGET_OS_MAC
-constexpr Platform PLATFORM = Platform::Mac;
+constexpr Platform NATIVE_PLATFORM = Platform::Mac;
 #elif TARGET_OS_IPHONE
-constexpr Platform PLATFORM = Platform::iPhone;
+constexpr Platform NATIVE_PLATFORM = Platform::iPhone;
 #endif
 #else
-constexpr Platform PLATFORM = Platform::Unknown;
+constexpr Platform NATIVE_PLATFORM = Platform::Unknown;
 #endif
 
 const char* getPlatformName(Platform _platform = Platform::Unknown);
@@ -51,7 +50,6 @@ constexpr const char* DIRECTORY_SEPARATOR = "\\";
 constexpr const char* DIRECTORY_SEPARATOR = "/";
 #endif
 
-} // namespace system
 } // namespace giga
 
 #endif // GIGA_PLATFORM_H

@@ -34,12 +34,12 @@ public:
     std::uint8_t* getBuf() noexcept;
     std::size_t getSize() const noexcept;
     std::size_t getPos() const noexcept;
-    endian::Endianness getEndianness() const noexcept;
+    Endianness getEndianness() const noexcept;
 
     void reset() noexcept;
     void setFilename(const std::string& filename) noexcept;
     void setBuf(const std::uint8_t* buf, std::size_t size);
-    void setEndianness(endian::Endianness _endianness) noexcept;
+    void setEndianness(Endianness _endianness) noexcept;
 	
 	template<typename T>
     T readScalar(int size = -1, int offset = -1) {
@@ -59,7 +59,7 @@ public:
             throw std::runtime_error("Couldn't read from buffer: " + std::string(e.what()));
         }
 
-        num = endian::byteswapEndianness<T>(num, _endianness, tmpSize);
+        num = byteswapEndianness<T>(num, _endianness, tmpSize);
 
         return num;
     }
@@ -76,7 +76,7 @@ public:
         }
 
         // swap bytes if needed
-        T tmpNum = endian::byteswapEndianness<T>(num, _endianness, tmpSize);
+        T tmpNum = byteswapEndianness<T>(num, _endianness, tmpSize);
         try {
             this->write(reinterpret_cast<const std::uint8_t*>(&tmpNum), tmpSize, offset);
         } catch(const std::exception& e){
@@ -88,7 +88,7 @@ private:
     std::string _filename = "";
     std::vector<std::uint8_t> _buf = {};
     std::size_t _pos = 0;
-    endian::Endianness _endianness = endian::NATIVE;
+    Endianness _endianness = NATIVE_ENDIANNESS;
 };
 
 } // namespace giga

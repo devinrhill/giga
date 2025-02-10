@@ -1,11 +1,10 @@
 #include "platform.h"
 
 namespace giga {
-namespace system {
 
 const char* getPlatformName(Platform _platform) {
 	if(_platform == Platform::Unknown) {
-		_platform = PLATFORM;
+		_platform = NATIVE_PLATFORM;
 	}
 
 	switch(_platform) {
@@ -29,5 +28,4 @@ unknown:
 	return "Unknown";
 }
 
-} // namespace system
 } // namespace giga

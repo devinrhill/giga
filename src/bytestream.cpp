@@ -239,14 +239,14 @@ std::size_t Bytestream::getPos() const noexcept {
 }
 
 
-endian::Endianness Bytestream::getEndianness() const noexcept {
+Endianness Bytestream::getEndianness() const noexcept {
 	return _endianness;
 }
 
 void Bytestream::reset() noexcept {
 	_buf.clear();
 	_pos = 0;
-	_endianness = endian::NATIVE;
+	_endianness = NATIVE_ENDIANNESS;
     _filename = "";
 }
 
@@ -260,7 +260,7 @@ void Bytestream::setBuf(const std::uint8_t* buf, std::size_t size) {
     std::copy(buf, buf + size, _buf.data());
 }
 
-void Bytestream::setEndianness(endian::Endianness endianness) noexcept {
+void Bytestream::setEndianness(Endianness endianness) noexcept {
 	_endianness = endianness;
 }
 

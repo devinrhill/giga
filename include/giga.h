@@ -7,10 +7,4 @@
 #include "lzss.h"
 #include "system.h"
 
-namespace giga {
-
-constexpr float VERSION = 1.0f;
-
-} // namespace giga
-
 #endif // GIGA_H

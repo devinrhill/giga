@@ -4,7 +4,6 @@
 #include <cstdint>
 
 namespace giga {
-namespace endian {
 enum class Endianness {
 	Unknown = 0,
 	Little = 1234,
@@ -12,9 +11,9 @@ enum class Endianness {
 };
 
 #if (defined(__x86_64__) || defined(__i386__))
-constexpr Endianness NATIVE = Endianness::Little;
+constexpr Endianness NATIVE_ENDIANNESS = Endianness::Little;
 #else
-constexpr Endianness NATIVE = Endianness::Big;
+constexpr Endianness NATIVE_ENDIANNESS = Endianness::Big;
 #endif
 
 inline uint16_t byteswap16(uint16_t num) {
@@ -35,7 +34,7 @@ inline uint64_t byteswap64(uint64_t num) {
 
 const char* getEndiannessName(Endianness endianness = Endianness::Unknown);
 template<typename T>
-T byteswapEndianness(T num, Endianness endianness = NATIVE, int size = -1) {
+T byteswapEndianness(T num, Endianness endianness = NATIVE_ENDIANNESS, int size = -1) {
     std::size_t tmpSize;
     if(size == -1) {
         tmpSize = sizeof(T);
@@ -43,7 +42,7 @@ T byteswapEndianness(T num, Endianness endianness = NATIVE, int size = -1) {
         tmpSize = size;
     }
 
-	if(endianness != NATIVE) {
+	if(endianness != NATIVE_ENDIANNESS) {
 		switch(tmpSize) {
 
 		case 1:
@@ -71,7 +70,6 @@ do_nothing:
 	return num;
 }
 
-} // namespace endian
 } // namespace giga
 
 #endif // GIGA_ENDIANNESS_H

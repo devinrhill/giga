@@ -1,11 +1,10 @@
 #include "endianness.h"
 
 namespace giga {
-namespace endian {
 
 const char* getEndiannessName(Endianness endianness) {
 	if(endianness == Endianness::Unknown) {
-		endianness = NATIVE;
+		endianness = NATIVE_ENDIANNESS;
 	}
 
 	switch(endianness) {
@@ -21,5 +20,4 @@ unknown_endianness:
 	return "Unknown";
 }
 
-} // namespace endian
 } // namespace giga
