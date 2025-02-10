@@ -20,7 +20,7 @@ $(OBJECTS): $(OBJECTDIR)/%.o: $(SOURCEDIR)/%.cpp
 	$(CXX) $< $(CXXFLAGS) -c -o $@
 
 $(TARGET): $(OBJECTS)
-	$(CXX) $@ -shared -fPIC -o $(TARGET)
+	$(CXX) $< -shared -fPIC -o $(TARGET)
 
 install: uninstall $(TARGET)
 	cp -r include /usr/include/giga

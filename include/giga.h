@@ -6,5 +6,6 @@
 #include "error.h"
 #include "lzss.h"
 #include "system.h"
+#include "version.h"
 
 #endif // GIGA_H
