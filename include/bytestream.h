@@ -31,8 +31,8 @@ public:
     std::size_t resize(std::size_t newSize);
 
     // Input/Output
-    std::size_t read(u8* buf, std::size_t size, int offset = -1);
-    std::size_t write(const u8* buf, std::size_t size, int offset = -1);
+    std::size_t read(void* buf, std::size_t size, int offset = -1);
+    std::size_t write(const void* buf, std::size_t size, int offset = -1);
     void writePadding(u8 padding, std::size_t paddingCount, int offset = -1);
     void writeString(const std::string& str, u8 pad = 0, std::size_t len = -1);
 

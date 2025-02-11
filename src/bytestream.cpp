@@ -17,7 +17,7 @@ Bytestream& Bytestream::operator=(Bytestream& other) {
     this->reset();
 
     _filename = other.getFilename();
-    this->setBuf(const_cast<const std::uint8_t*>(other.getBuf()), other.getSize());
+    this->setBuf(const_cast<const u8*>(other.getBuf()), other.getSize());
     _pos = other.getPos();
     _endianness = other.getEndianness();
 
@@ -123,7 +123,7 @@ std::size_t Bytestream::resize(std::size_t newSize) {
     return _buf.size();
 }
 
-std::size_t Bytestream::read(std::uint8_t* buf, std::size_t size, int offset) {
+std::size_t Bytestream::read(void* buf, std::size_t size, int offset) {
     if(!buf) {
         throw err::FormatException<std::invalid_argument>("Buffer is null");
     }
@@ -145,7 +145,7 @@ std::size_t Bytestream::read(std::uint8_t* buf, std::size_t size, int offset) {
 
     std::size_t readCount = std::min(availableCount, size);
 
-    std::copy(_buf.data() + tmpOffset, _buf.data() + tmpOffset + readCount, buf);
+    std::copy(_buf.data() + tmpOffset, _buf.data() + tmpOffset + readCount, reinterpret_cast<u8*>(buf));
 
     if(offset == -1) {
         _pos += readCount;
@@ -154,7 +154,7 @@ std::size_t Bytestream::read(std::uint8_t* buf, std::size_t size, int offset) {
     return readCount;
 }
 
-std::size_t Bytestream::write(const std::uint8_t* buf, std::size_t size, int offset) {
+std::size_t Bytestream::write(const void* buf, std::size_t size, int offset) {
 	if(!buf) {
         throw err::FormatException<std::invalid_argument>("Buffer is null");
     }
@@ -177,7 +177,7 @@ std::size_t Bytestream::write(const std::uint8_t* buf, std::size_t size, int off
         }
     }
 
-    std::copy(buf, buf + size, _buf.begin() + tmpOffset);
+    std::copy(reinterpret_cast<const u8*>(buf), reinterpret_cast<const u8*>(buf) + size, _buf.begin() + tmpOffset);
 
     if(offset == -1) {
         _pos += size;
@@ -186,21 +186,21 @@ std::size_t Bytestream::write(const std::uint8_t* buf, std::size_t size, int off
     return size;
 }
 
-void Bytestream::writePadding(std::uint8_t pad, std::size_t padCount, int offset) {
-	if(padCount < 1) {
+void Bytestream::writePadding(u8 padding, std::size_t paddingCount, int offset) {
+	if(paddingCount < 1) {
         return;
     }
 
-	for(std::size_t i = 0; i < padCount; i++) {
+	for(std::size_t i = 0; i < paddingCount; i++) {
 		try {
-            this->write(&pad, 1, offset);
+            this->write(&padding, 1, offset);
         } catch(const std::exception& e) {
             throw err::FormatException<std::runtime_error>("Couldn't write padding byte to internal character buffer");
         }
 	}
 }
 
-void Bytestream::writeString(const std::string& str, std::uint8_t pad, std::size_t len) {
+void Bytestream::writeString(const std::string& str, u8 padding, std::size_t len) {
     if(str.empty()) {
 		throw err::FormatException<std::invalid_argument>("String is empty");
 	}
@@ -211,15 +211,15 @@ void Bytestream::writeString(const std::string& str, std::uint8_t pad, std::size
     for(std::size_t i = 0; i < len; i++) {
         if(i < str.size()) {
             try {
-                this->write(reinterpret_cast<const std::uint8_t*>(str.c_str() + i), 1);
+                this->write(reinterpret_cast<const u8*>(str.c_str() + i), 1);
             } catch(const std::exception& e) {
                 throw err::FormatException<std::runtime_error>(std::format("Couldn't write character {} of string 0x{:x} to internal character buffer", i, str[i]));
             }
         } else {
             try {
-                this->writeScalar<char>(pad);
+                this->writeScalar<char>(padding);
             } catch(const std::exception& e) {
-                throw err::FormatException<std::runtime_error>(std::format("Couldn't write padding character 0{:x} to internal character buffer", pad));
+                throw err::FormatException<std::runtime_error>(std::format("Couldn't write padding character 0{:x} to internal character buffer", padding));
             }
         }
     }
@@ -233,7 +233,7 @@ std::string Bytestream::getFilename() const noexcept {
     return _filename;
 }
 
-std::uint8_t* Bytestream::getBuf() noexcept {
+u8* Bytestream::getBuf() noexcept {
 	return _buf.data();
 }
 
@@ -253,7 +253,7 @@ void Bytestream::setFilename(const std::string& filename) noexcept {
     _filename = filename;
 }
 
-void Bytestream::setBuf(const std::uint8_t* buf, std::size_t size) {
+void Bytestream::setBuf(const u8* buf, std::size_t size) {
     _buf.clear();
 
     _buf.resize(size);
